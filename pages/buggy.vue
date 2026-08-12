@@ -4,10 +4,18 @@ import { formatReportTime } from '~/shared/report-time.mjs'
 
 useHead({ title: '再現画面 | Nuxt Debug Observatory' })
 
-// 演習用に、サーバーをUTC、ブラウザをAsia/Tokyoとして固定する。
-// 同じ値でも文字列が変わり、SSRのHTMLとhydration時の仮想DOMが一致しなくなる。
+/**
+ * 意図的な不一致を作る境界。
+ *
+ * <script setup>は、初回アクセスではSSR中にも、HTML受信後にはブラウザのHydration中にも評価される。
+ * ここで環境ごとに異なるタイムゾーンを選ぶと、同じDateでも別のテキストノードが作られる。
+ * 実務ではこの条件分岐を書かなくても、Node.jsのTZ設定とユーザー環境のTZ設定が異なれば同種の問題が起きる。
+ */
 const renderTimeZone = import.meta.server ? 'UTC' : 'Asia/Tokyo'
 const formattedAt = formatReportTime(renderTimeZone)
+
+// 以下の2値は画面上で原因を説明するための比較専用値である。
+// 実際にHydrationされる値はformattedAtであり、固定の入力値を別々の形式で観測できるようにしている。
 const serverValue = formatReportTime('UTC')
 const clientValue = formatReportTime('Asia/Tokyo')
 </script>

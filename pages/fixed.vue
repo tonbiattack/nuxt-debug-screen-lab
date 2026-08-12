@@ -4,11 +4,18 @@ import { formatReportTime } from '~/shared/report-time.mjs'
 
 useHead({ title: '修正画面 | Nuxt Debug Observatory' })
 
-// SSRとhydrationの初回は同じ文字列にする。ブラウザ依存の書式化はマウント後にだけ実行する。
+/**
+ * SSRとHydrationの最初の比較対象をそろえるための初期値。
+ *
+ * refの初期値はサーバーとクライアントで同じ文字列になる。ここでIntlやwindowの値を読まないことが重要である。
+ * 利用者固有の表示は、Hydration完了後にだけ更新する。
+ */
 const formattedAt = ref('ブラウザ時刻を取得中…')
 const browserTimeZone = ref('未取得')
 
 onMounted(() => {
+  // onMountedはSSRでは実行されない。したがって、このブラウザ専用APIは初期HTMLを変えない。
+  // Hydrationが終わってから表示を置き換えるため、初回のDOM比較対象を壊さずにローカル時刻を出せる。
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
   browserTimeZone.value = timeZone
   formattedAt.value = formatReportTime(timeZone)
