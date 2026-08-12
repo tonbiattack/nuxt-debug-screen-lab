@@ -1,3 +1,11 @@
+---
+title: "Nuxtで「SSRではUTC、画面ではJST」になった：日時の表示差異を再現してHydrationを切り分ける"
+emoji: "🔍"
+type: "tech"
+topics: ["nuxt", "vue", "ssr", "hydration", "debug"]
+published: false
+---
+
 # Nuxtで「SSRではUTC、画面ではJST」になった：日時の表示差異を再現してHydrationを切り分ける
 
 ## はじめに
